@@ -1,0 +1,123 @@
+---
+const planes = [
+  {
+    id: "starter",
+    nombre: "Starter",
+    precio: "99",
+    usuarios: "Hasta 50 trabajadores/as",
+    modulos: ["M1 Canal de denuncia", "M3 Formación básica", "M7 Termómetro de clima"],
+    destacado: false,
+    cta: "Empezar gratis 30 días",
+  },
+  {
+    id: "professional",
+    nombre: "Professional",
+    precio: "299",
+    usuarios: "Hasta 500 trabajadores/as",
+    modulos: [
+      "M1 Canal de denuncia",
+      "M2 Asistente IA",
+      "M3 Formación completa",
+      "M4 Línea de contacto",
+      "M5 Gestión de expedientes",
+      "M6 Reporting ejecutivo",
+      "M7 Termómetro de clima",
+    ],
+    destacado: true,
+    cta: "Solicitar demo",
+  },
+  {
+    id: "enterprise",
+    nombre: "Enterprise",
+    precio: "A medida",
+    usuarios: "Sin límite de trabajadores",
+    modulos: [
+      "Todos los módulos",
+      "M8 Mediación y represalias",
+      "SLA garantizado",
+      "Integración con HRIS / AD",
+      "Onboarding dedicado",
+      "DPO de apoyo incluido",
+    ],
+    destacado: false,
+    cta: "Contactar con ventas",
+  },
+];
+---
+
+<section id="precios" class="py-20 bg-gray-50">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-14">
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Planes y precios</h2>
+      <p class="text-lg text-gray-600">
+        Precio mensual por empresa. Sin coste por usuario adicional dentro del límite.
+        IVA no incluido.
+      </p>
+    </div>
+
+    <div class="grid gap-6 lg:grid-cols-3">
+      {planes.map((p) => (
+        <div class={`rounded-2xl border-2 p-8 flex flex-col gap-6 ${
+          p.destacado
+            ? "border-blue-600 bg-blue-600 text-white shadow-2xl scale-105"
+            : "border-gray-200 bg-white"
+        }`}>
+          {p.destacado && (
+            <div class="text-center">
+              <span class="text-xs font-bold bg-white text-blue-700 px-3 py-1 rounded-full uppercase tracking-wide">
+                Más popular
+              </span>
+            </div>
+          )}
+
+          <div>
+            <h3 class={`text-xl font-bold ${p.destacado ? "text-white" : "text-gray-900"}`}>
+              {p.nombre}
+            </h3>
+            <div class="mt-2 flex items-baseline gap-1">
+              {p.precio !== "A medida" ? (
+                <>
+                  <span class={`text-4xl font-extrabold ${p.destacado ? "text-white" : "text-gray-900"}`}>
+                    {p.precio}€
+                  </span>
+                  <span class={`text-sm ${p.destacado ? "text-blue-200" : "text-gray-500"}`}>/mes</span>
+                </>
+              ) : (
+                <span class={`text-2xl font-bold ${p.destacado ? "text-white" : "text-gray-900"}`}>
+                  {p.precio}
+                </span>
+              )}
+            </div>
+            <p class={`text-sm mt-1 ${p.destacado ? "text-blue-200" : "text-gray-500"}`}>
+              {p.usuarios}
+            </p>
+          </div>
+
+          <ul class="flex-1 space-y-2">
+            {p.modulos.map((m) => (
+              <li class={`flex items-start gap-2 text-sm ${p.destacado ? "text-blue-100" : "text-gray-600"}`}>
+                <span class={`mt-0.5 font-bold ${p.destacado ? "text-white" : "text-green-500"}`} aria-hidden="true">✓</span>
+                {m}
+              </li>
+            ))}
+          </ul>
+
+          <a
+            href="/demo"
+            class={`w-full text-center py-3 px-6 rounded-xl font-semibold text-sm transition-colors ${
+              p.destacado
+                ? "bg-white text-blue-700 hover:bg-blue-50"
+                : "bg-blue-600 text-white hover:bg-blue-700"
+            }`}
+          >
+            {p.cta}
+          </a>
+        </div>
+      ))}
+    </div>
+
+    <p class="text-center text-sm text-gray-500 mt-8">
+      ¿Administración pública o cooperativa? Contacta para precios adaptados.
+    </p>
+  </div>
+</section>

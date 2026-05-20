@@ -1,0 +1,5 @@
+#!/bin/sh
+# SafeWork AI — commit-msg hook
+# Valida el formato del mensaje (Conventional Commits)
+
+pnpm commitlint --edit "$1"

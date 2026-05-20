@@ -1,0 +1,45 @@
+---
+import { getCollection } from "astro:content";
+import Base from "@/layouts/Base.astro";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+function formatDate(d: Date) {
+  return d.toLocaleDateString("es-ES", { year: "numeric", month: "long", day: "numeric" });
+}
+---
+
+<Base
+  title="Blog — SafeWork AI"
+  description="Artículos sobre cumplimiento normativo laboral, prevención del acoso, Ley 2/2023 y gestión de igualdad en la empresa."
+>
+  <main class="max-w-3xl mx-auto px-4 py-16">
+    <div class="mb-12">
+      <h1 class="text-4xl font-bold text-gray-900 mb-3">Blog SafeWork AI</h1>
+      <p class="text-lg text-gray-600">Cumplimiento normativo, prevención del acoso y gestión de la igualdad — sin jerga jurídica innecesaria.</p>
+    </div>
+
+    <div class="space-y-10">
+      {posts.map((post) => (
+        <article class="border-b border-gray-100 pb-10 last:border-0">
+          <div class="flex flex-wrap gap-2 mb-3">
+            {post.data.tags.map((tag) => (
+              <span class="inline-block px-2 py-0.5 text-xs font-medium bg-blue-50 text-blue-700 rounded-full">
+                {tag}
+              </span>
+            ))}
+          </div>
+          <h2 class="text-2xl font-bold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
+            <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+          </h2>
+          <p class="text-gray-600 mb-4 leading-relaxed">{post.data.description}</p>
+          <div class="flex items-center justify-between text-sm text-gray-400">
+            <span>{post.data.author}</span>
+            <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+          </div>
+        </article>
+      ))}
+    </div>
+  </main>
+</Base>

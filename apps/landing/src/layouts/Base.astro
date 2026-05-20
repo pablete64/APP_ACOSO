@@ -1,0 +1,132 @@
+---
+export interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = "SafeWork AI — Plataforma B2B2E de prevención y gestión del acoso laboral. Canal seguro de denuncia, formación y cumplimiento normativo.",
+  ogImage = "/og-default.png",
+  noindex = false,
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="es" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1e40af" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalURL} />
+
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+
+    <!-- SEO -->
+    <title>{title} — SafeWork AI</title>
+    <meta name="description" content={description} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={`${title} — SafeWork AI`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site)} />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:site_name" content="SafeWork AI" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} — SafeWork AI`} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site)} />
+
+    <!-- Schema.org Organization -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "SafeWork AI",
+      "url": "https://safework.es",
+      "logo": "https://safework.es/logo.png",
+      "description": description,
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "hola@safework.es",
+        "contactType": "sales"
+      },
+      "sameAs": ["https://linkedin.com/company/safework-ai"]
+    })} />
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Security headers (complementan los de Nginx) -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="referrer" content="no-referrer" />
+  </head>
+  <body class="bg-white text-gray-900 font-sans antialiased">
+    <!-- Skip link a11y -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-700 focus:text-white focus:rounded-lg focus:ring-2 focus:ring-white"
+    >
+      Saltar al contenido principal
+    </a>
+
+    <slot />
+
+    <!-- Cookie consent banner -->
+    <div
+      id="cookie-banner"
+      role="dialog"
+      aria-label="Aviso de cookies"
+      aria-live="polite"
+      class="fixed bottom-0 inset-x-0 z-50 bg-gray-900 text-white p-4 hidden"
+    >
+      <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <p class="text-sm flex-1">
+          Usamos únicamente cookies técnicas estrictamente necesarias. No usamos cookies de seguimiento ni publicidad.
+          <a href="/legal/cookies" class="underline ml-1">Más información</a>
+        </p>
+        <div class="flex gap-2 shrink-0">
+          <button
+            id="cookie-accept"
+            class="px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+          >
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Cookie consent — mínimo viable (solo técnicas)
+      const COOKIE_KEY = "sw_consent_v1";
+      const banner = document.getElementById("cookie-banner");
+      if (!localStorage.getItem(COOKIE_KEY) && banner) {
+        banner.classList.remove("hidden");
+        document.getElementById("cookie-accept")?.addEventListener("click", () => {
+          localStorage.setItem(COOKIE_KEY, "1");
+          banner.classList.add("hidden");
+        });
+      }
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --font-sans: "Inter", system-ui, sans-serif;
+  }
+  body { font-family: var(--font-sans); }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+</style>

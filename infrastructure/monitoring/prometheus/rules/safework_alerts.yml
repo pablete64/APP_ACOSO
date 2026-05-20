@@ -1,0 +1,62 @@
+groups:
+  - name: safework_slo
+    rules:
+      # p95 latencia API > 500ms durante 5 min
+      - alert: ApiLatencyHigh
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="safework-api"}[5m])) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API p95 > 500ms"
+          description: "El percentil 95 de latencia de la API lleva {{ $value | humanizeDuration }} superando 500ms"
+
+      # Tasa de errores 5xx > 1%
+      - alert: ApiErrorRateHigh
+        expr: |
+          rate(http_requests_total{job="safework-api", status=~"5.."}[5m])
+          /
+          rate(http_requests_total{job="safework-api"}[5m]) > 0.01
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Tasa de errores 5xx > 1%"
+          description: "{{ $value | humanizePercentage }} de requests fallan con 5xx"
+
+      # API caída (no responde a scrape)
+      - alert: ApiDown
+        expr: up{job="safework-api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "safework-api no responde"
+
+      # Redis caído
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis no responde — sesiones y rate limiting afectados"
+
+      # PostgreSQL caído
+      - alert: PostgresDown
+        expr: up{job="postgres"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL no responde"
+
+      # Disco > 80%
+      - alert: DiskUsageHigh
+        expr: (1 - node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) > 0.8
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Uso de disco > 80%"
+          description: "{{ $value | humanizePercentage }} del disco usado en {{ $labels.instance }}"

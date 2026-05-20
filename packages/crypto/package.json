@@ -1,0 +1,23 @@
+{
+  "name": "@safework/crypto",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Módulo de cifrado E2E para SafeWork AI — AES-256-GCM, PBKDF2, AES-KW, SHA-256 (Web Crypto API nativa)",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test":       "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo 'No lint configured yet'"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^1.6.0",
+    "typescript": "5.4.5",
+    "vitest": "^1.6.0"
+  }
+}

@@ -1,0 +1,100 @@
+---
+const modulos = [
+  {
+    num: "M1",
+    icono: "🛡",
+    titulo: "Canal seguro de denuncia",
+    descripcion: "Anónimo o identificado. Cifrado E2E. Tracking code. Plazos legales Ley 2/2023 automáticos.",
+    color: "border-blue-200 bg-blue-50",
+    badge: "Obligatorio",
+  },
+  {
+    num: "M2",
+    icono: "🤖",
+    titulo: "Asistente IA empático",
+    descripcion: "Disponible 24/7. Orienta sin diagnosticar. Deriva a 024/112/016 ante crisis. Guardrails pre-LLM.",
+    color: "border-indigo-200 bg-indigo-50",
+    badge: null,
+  },
+  {
+    num: "M3",
+    icono: "🎓",
+    titulo: "Formación y recursos",
+    descripcion: "Cursos por perfil con certificado verificable. Biblioteca normativa actualizada: BOE, INSST, OIT.",
+    color: "border-purple-200 bg-purple-50",
+    badge: "Obligatorio",
+  },
+  {
+    num: "M4",
+    icono: "💬",
+    titulo: "Línea de contacto",
+    descripcion: "Mensajería cifrada con personas designadas. Citas presenciales, telefónicas o videollamada Jitsi.",
+    color: "border-teal-200 bg-teal-50",
+    badge: null,
+  },
+  {
+    num: "M5",
+    icono: "📋",
+    titulo: "Gestión de expedientes",
+    descripcion: "Sellado de tiempo RFC 3161. Firma CAdES-BES. Audit trail inmutable. Exportación para Inspección.",
+    color: "border-amber-200 bg-amber-50",
+    badge: "Obligatorio",
+  },
+  {
+    num: "M6",
+    icono: "📊",
+    titulo: "Reporting y dashboard",
+    descripcion: "KPIs ejecutivos sin datos individuales. Informe Plan de Igualdad anual. Exportación PDF/CSV.",
+    color: "border-green-200 bg-green-50",
+    badge: null,
+  },
+  {
+    num: "M7",
+    icono: "🌡",
+    titulo: "Termómetro de clima",
+    descripcion: "Encuestas FPSICO/INSST. K-anonimato integrado. Alertas tempranas de riesgo psicosocial.",
+    color: "border-orange-200 bg-orange-50",
+    badge: null,
+  },
+  {
+    num: "M8",
+    icono: "🤝",
+    titulo: "Mediación y pares de apoyo",
+    descripcion: "Red de apoyo entre iguales. Mediación formal con consentimiento. Registro cifrado de represalias.",
+    color: "border-rose-200 bg-rose-50",
+    badge: null,
+  },
+];
+---
+
+<section id="como-funciona" class="py-20 bg-gray-50">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-14">
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+        8 módulos. Una plataforma.
+      </h2>
+      <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+        Cada módulo cubre un área de cumplimiento. Puedes activar solo los que necesitas
+        según el Plan de Igualdad de tu empresa.
+      </p>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {modulos.map((m) => (
+        <div class={`rounded-2xl border-2 ${m.color} p-5 flex flex-col gap-3 relative`}>
+          {m.badge && (
+            <span class="absolute top-3 right-3 text-[10px] font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full uppercase tracking-wide">
+              {m.badge}
+            </span>
+          )}
+          <div class="flex items-center gap-2">
+            <span class="text-2xl" aria-hidden="true">{m.icono}</span>
+            <span class="text-xs font-bold text-gray-400 font-mono">{m.num}</span>
+          </div>
+          <h3 class="text-sm font-bold text-gray-900">{m.titulo}</h3>
+          <p class="text-xs text-gray-600 leading-relaxed">{m.descripcion}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

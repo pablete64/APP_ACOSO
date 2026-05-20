@@ -1,0 +1,5 @@
+#!/bin/sh
+# SafeWork AI — pre-commit hook
+# Ejecuta lint-staged sobre los archivos en stage
+
+pnpm lint-staged

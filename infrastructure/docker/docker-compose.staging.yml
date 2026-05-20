@@ -1,0 +1,135 @@
+version: "3.9"
+
+# ============================================================
+# SafeWork AI — Docker Compose STAGING
+# Uso: docker-compose -f docker-compose.yml -f docker-compose.staging.yml up -d
+# Diferencias vs producción:
+#   - Una sola réplica de API (sin HA)
+#   - Prometheus/Grafana sin persistencia (volúmenes tmpfs)
+#   - Datos sintéticos (seed automático al arrancar)
+#   - Logs a nivel DEBUG
+#   - Docs API visibles (/docs, /redoc)
+# ============================================================
+
+services:
+  postgres:
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: safework_staging
+    ports: []
+
+  redis:
+    restart: unless-stopped
+    ports: []
+
+  api:
+    build:
+      target: production
+    restart: unless-stopped
+    environment:
+      DEBUG: "true"
+      API_RELOAD: "false"
+      ENVIRONMENT: staging
+      DATABASE_URL: "postgresql://safework:${DATABASE_PASSWORD}@postgres:5432/safework_staging"
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 512M
+
+  ai-engine:
+    build:
+      target: production
+    restart: unless-stopped
+    environment:
+      ENVIRONMENT: staging
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 1G
+
+  case-management:
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: staging
+
+  web:
+    build:
+      target: production
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: https://staging.safework.es/api/v1
+
+  landing:
+    build:
+      target: production
+    restart: unless-stopped
+
+  # Seed de datos sintéticos al arrancar
+  seed:
+    image: postgres:16-alpine
+    depends_on:
+      - postgres
+    volumes:
+      - ../../database/seeds/dev_seed.sql:/seed.sql:ro
+    command: >
+      sh -c "
+        until pg_isready -h postgres -U safework; do sleep 1; done;
+        psql postgresql://safework:${DATABASE_PASSWORD}@postgres:5432/safework_staging -f /seed.sql || true
+      "
+    networks:
+      - safework_net
+
+  # Observabilidad staging (sin persistencia)
+  prometheus:
+    image: prom/prometheus:v2.51.2
+    container_name: safework_staging_prometheus
+    restart: unless-stopped
+    volumes:
+      - ../../infrastructure/monitoring/prometheus:/etc/prometheus:ro
+    tmpfs:
+      - /prometheus
+    expose:
+      - "9090"
+    networks:
+      - safework_net
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: safework_staging_grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: staging
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+    volumes:
+      - ../../infrastructure/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ../../infrastructure/monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    tmpfs:
+      - /var/lib/grafana
+    expose:
+      - "3000"
+    networks:
+      - safework_net
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    restart: unless-stopped
+    environment:
+      DATA_SOURCE_NAME: "postgresql://safework:${DATABASE_PASSWORD}@postgres:5432/safework_staging?sslmode=disable"
+    expose:
+      - "9187"
+    networks:
+      - safework_net
+
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.58.0
+    restart: unless-stopped
+    environment:
+      REDIS_ADDR: "redis://redis:6379"
+    expose:
+      - "9121"
+    networks:
+      - safework_net

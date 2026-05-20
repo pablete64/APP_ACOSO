@@ -1,0 +1,64 @@
+{
+  "app": {
+    "name": "SafeWork AI",
+    "tagline": "Your safe space at work"
+  },
+  "nav": {
+    "denuncia":   "Submit report",
+    "seguimiento":"Track report",
+    "asistente":  "AI Assistant",
+    "formacion":  "Training",
+    "contacto":   "Contact line",
+    "clima":      "Workplace climate",
+    "expedientes":"Cases",
+    "denuncias":  "Reports",
+    "usuarios":   "Users",
+    "reportes":   "Reports",
+    "auditoria":  "Audit log",
+    "plan":       "Equality plan",
+    "dashboard":  "Dashboard"
+  },
+  "auth": {
+    "login":          "Sign in",
+    "logout":         "Sign out",
+    "email":          "Email address",
+    "password":       "Password",
+    "forgot":         "Forgot your password?",
+    "mfa_code":       "Verification code (MFA)",
+    "mfa_placeholder":"123456"
+  },
+  "errors": {
+    "unauthorized":  "You don't have access to this section",
+    "not_found":     "Page not found",
+    "server_error":  "Server error. Please try again later.",
+    "session_expired":"Your session has expired. Please sign in again."
+  },
+  "actions": {
+    "save":      "Save",
+    "cancel":    "Cancel",
+    "confirm":   "Confirm",
+    "delete":    "Delete",
+    "download":  "Download",
+    "send":      "Send",
+    "next":      "Next",
+    "back":      "Back",
+    "copy":      "Copy",
+    "copied":    "Copied"
+  },
+  "status": {
+    "loading":   "Loading...",
+    "saving":    "Saving...",
+    "success":   "Saved successfully",
+    "error":     "An error occurred"
+  },
+  "discrete_mode": {
+    "enable":  "Enable discrete mode",
+    "disable": "Show SafeWork AI"
+  },
+  "legal": {
+    "notice_title": "Legal notice — Law 2/2023 and GDPR",
+    "anonymous":    "Anonymous",
+    "tracking_code":"Tracking code",
+    "tracking_hint": "Save this code — it is the only way to access your report."
+  }
+}

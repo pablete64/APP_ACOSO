@@ -1,0 +1,75 @@
+---
+import Base from "@/layouts/Base.astro";
+---
+
+<Base title="DPA — Acuerdo de encargado del tratamiento" noindex={false}>
+  <div class="max-w-3xl mx-auto px-6 py-16 prose prose-gray">
+    <h1>Acuerdo de encargado del tratamiento (DPA)</h1>
+    <p class="text-gray-500 text-sm">
+      Artículo 28 RGPD — entre la empresa cliente (Responsable) y REKER Tech Solutions S.L. (Encargado)
+    </p>
+
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 not-prose mb-8">
+      <p class="text-sm text-amber-700">
+        Este es el DPA modelo de SafeWork AI. Debe ser firmado por el representante legal
+        de la empresa cliente antes de activar el servicio. Contacta con
+        <a href="mailto:legal@safework.es" class="underline">legal@safework.es</a> para obtener
+        la versión firmable en PDF.
+      </p>
+    </div>
+
+    <h2>1. Objeto y duración</h2>
+    <p>
+      El presente acuerdo regula el tratamiento de datos personales que REKER Tech Solutions S.L.
+      («Encargado») realizará por cuenta de la empresa cliente («Responsable») en el marco
+      de la prestación del servicio SafeWork AI, conforme al art. 28 del Reglamento (UE) 2016/679 (RGPD).
+      Tendrá la misma vigencia que el contrato principal de servicios.
+    </p>
+
+    <h2>2. Naturaleza y finalidad del tratamiento</h2>
+    <p>
+      El Encargado tratará los datos indicados en el Anexo I para permitir el funcionamiento
+      de los módulos contratados: canal de denuncia, asistente IA, gestión de expedientes,
+      formación, línea de contacto, termómetro de clima, reporting y mediación.
+    </p>
+
+    <h2>3. Obligaciones del Encargado</h2>
+    <ul>
+      <li>Tratar los datos únicamente según instrucciones documentadas del Responsable.</li>
+      <li>Garantizar la confidencialidad mediante acuerdos con el personal autorizado.</li>
+      <li>Implementar medidas técnicas y organizativas del art. 32 RGPD (cifrado E2E, MFA, audit log).</li>
+      <li>Notificar brechas de seguridad en un plazo máximo de 72 horas tras tener conocimiento.</li>
+      <li>Devolver o destruir los datos al finalizar el contrato, salvo obligación legal de conservación.</li>
+      <li>Asistir al Responsable en el ejercicio de derechos de los interesados.</li>
+      <li>Facilitar auditorías o inspecciones por parte del Responsable o un auditor designado.</li>
+    </ul>
+
+    <h2>4. Subencargados</h2>
+    <p>
+      El Encargado podrá utilizar subencargados (proveedores de hosting, almacenamiento cifrado)
+      domiciliados en la UE y con garantías RGPD equivalentes. El Responsable será informado
+      de cualquier cambio con un mínimo de 30 días de antelación.
+    </p>
+
+    <h2>5. Seguridad y cifrado</h2>
+    <p>
+      Los datos sensibles (denuncias, mensajes, evidencias) son cifrados en el dispositivo
+      del usuario con AES-256-GCM antes de transmitirse. El Encargado no tiene acceso técnico
+      al texto en claro. Esta característica constituye una medida de seudonimización
+      conforme al art. 32.1.a RGPD.
+    </p>
+
+    <h2>6. Transferencias internacionales</h2>
+    <p>El Encargado no realizará transferencias de datos a terceros países fuera del EEE.</p>
+
+    <h2>7. Contacto DPO</h2>
+    <p>
+      DPO del Encargado: <a href="mailto:dpo@safework.es">dpo@safework.es</a>
+    </p>
+
+    <hr/>
+    <p class="text-sm text-gray-500">
+      [Espacio para firmas — versión PDF disponible bajo solicitud]
+    </p>
+  </div>
+</Base>

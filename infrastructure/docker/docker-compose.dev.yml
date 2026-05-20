@@ -1,0 +1,78 @@
+version: "3.9"
+
+# ============================================================
+# SafeWork AI — Docker Compose DESARROLLO
+# Uso: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+# ============================================================
+
+services:
+  postgres:
+    ports:
+      - "5432:5432"
+
+  redis:
+    ports:
+      - "6379:6379"
+
+  api:
+    build:
+      target: development
+    volumes:
+      - ../../services/api:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      API_RELOAD: "true"
+      DEBUG: "true"
+
+  ai-engine:
+    build:
+      target: development
+    volumes:
+      - ../../services/ai-engine:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+
+  case-management:
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
+  web:
+    build:
+      target: development
+    volumes:
+      - ../../apps/web:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+    environment:
+      NODE_ENV: development
+
+  landing:
+    build:
+      target: development
+    volumes:
+      - ../../apps/landing:/app
+      - /app/node_modules
+    command: npm run dev
+
+  # --- Adminer (UI para PostgreSQL en desarrollo) ---
+  adminer:
+    image: adminer:latest
+    container_name: safework_adminer
+    restart: unless-stopped
+    ports:
+      - "8888:8080"
+    depends_on:
+      - postgres
+    networks:
+      - safework_net
+
+  # --- Mailhog (servidor SMTP local para desarrollo) ---
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: safework_mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - safework_net

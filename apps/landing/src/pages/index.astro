@@ -1,0 +1,93 @@
+---
+import Base from "@/layouts/Base.astro";
+import Hero from "@/components/sections/Hero.astro";
+import Modulos from "@/components/sections/Modulos.astro";
+import Seguridad from "@/components/sections/Seguridad.astro";
+import Precios from "@/components/sections/Precios.astro";
+import Demo from "@/components/sections/Demo.astro";
+import ParaQuien from "@/components/sections/ParaQuien.astro";
+---
+
+<Base
+  title="Plataforma de prevención del acoso laboral"
+  description="SafeWork AI integra canal de denuncia Ley 2/2023, asistente IA, gestión de expedientes con firma digital y formación obligatoria — cifrado extremo a extremo."
+>
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="/" class="font-bold text-xl text-gray-900" aria-label="SafeWork AI — Inicio">
+        SafeWork <span class="text-blue-600">AI</span>
+      </a>
+      <nav aria-label="Navegación principal" class="hidden md:flex items-center gap-6">
+        <a href="#para-quien" class="text-sm text-gray-600 hover:text-gray-900 transition-colors">Para quién</a>
+        <a href="#como-funciona" class="text-sm text-gray-600 hover:text-gray-900 transition-colors">Cómo funciona</a>
+        <a href="#seguridad" class="text-sm text-gray-600 hover:text-gray-900 transition-colors">Seguridad</a>
+        <a href="#precios" class="text-sm text-gray-600 hover:text-gray-900 transition-colors">Precios</a>
+        <a href="/blog" class="text-sm text-gray-600 hover:text-gray-900 transition-colors">Blog</a>
+        <a href="https://app.safework.es/auth/login" class="text-sm text-gray-600 hover:text-gray-900 transition-colors">Acceder</a>
+        <a
+          href="/demo"
+          class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+        >
+          Demo gratuita
+        </a>
+      </nav>
+      <!-- Móvil: solo CTA -->
+      <a
+        href="/demo"
+        class="md:hidden px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+      >
+        Demo
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <Hero />
+    <ParaQuien />
+    <Modulos />
+    <Seguridad />
+    <Precios />
+    <Demo />
+  </main>
+
+  <footer class="bg-gray-900 text-gray-400 py-12">
+    <div class="max-w-6xl mx-auto px-6 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <div>
+        <p class="text-white font-bold text-lg mb-3">SafeWork AI</p>
+        <p class="text-sm leading-relaxed">
+          Plataforma B2B2E de prevención y gestión del acoso laboral.
+          Desarrollada por REKER Tech Solutions S.L.
+        </p>
+      </div>
+      <div>
+        <p class="text-white text-sm font-semibold mb-3 uppercase tracking-wide">Producto</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#como-funciona" class="hover:text-white transition-colors">Cómo funciona</a></li>
+          <li><a href="#seguridad" class="hover:text-white transition-colors">Seguridad</a></li>
+          <li><a href="#precios" class="hover:text-white transition-colors">Precios</a></li>
+          <li><a href="/blog" class="hover:text-white transition-colors">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-white text-sm font-semibold mb-3 uppercase tracking-wide">Legal</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/legal/aviso-legal" class="hover:text-white transition-colors">Aviso legal</a></li>
+          <li><a href="/legal/privacidad" class="hover:text-white transition-colors">Política de privacidad</a></li>
+          <li><a href="/legal/cookies" class="hover:text-white transition-colors">Política de cookies</a></li>
+          <li><a href="/legal/dpa" class="hover:text-white transition-colors">DPA modelo</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-white text-sm font-semibold mb-3 uppercase tracking-wide">Contacto</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="mailto:hola@safework.es" class="hover:text-white transition-colors">hola@safework.es</a></li>
+          <li><a href="mailto:dpo@safework.es" class="hover:text-white transition-colors">dpo@safework.es</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="max-w-6xl mx-auto px-6 mt-10 pt-6 border-t border-gray-800 flex flex-col sm:flex-row justify-between gap-4 text-xs">
+      <p>© {new Date().getFullYear()} REKER Tech Solutions S.L. — Todos los derechos reservados</p>
+      <p>Cloud europeo · RGPD · ISO 27001 en proceso</p>
+    </div>
+  </footer>
+</Base>

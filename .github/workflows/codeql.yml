@@ -1,0 +1,68 @@
+name: CodeQL
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Cada martes a las 06:00 UTC
+    - cron: "0 6 * * 2"
+
+jobs:
+  analyze:
+    name: CodeQL — ${{ matrix.language }}
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [javascript-typescript, python, java-kotlin]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-and-quality
+          config: |
+            paths-ignore:
+              - "node_modules"
+              - "**/__pycache__"
+              - "**/*.test.ts"
+              - "**/*.spec.ts"
+
+      - if: matrix.language == 'javascript-typescript'
+        uses: pnpm/action-setup@v4
+        with:
+          version: "9"
+
+      - if: matrix.language == 'javascript-typescript'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+
+      - if: matrix.language == 'javascript-typescript'
+        run: pnpm install --frozen-lockfile
+
+      - if: matrix.language == 'java-kotlin'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - if: matrix.language == 'java-kotlin'
+        run: mvn -f services/case-management/pom.xml compile -DskipTests -q
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: ${{ matrix.language }}

@@ -1,0 +1,82 @@
+---
+const garantias = [
+  {
+    icono: "🔐",
+    titulo: "Cifrado extremo a extremo",
+    desc: "AES-256-GCM en cliente. El servidor nunca almacena texto en claro de denuncias, mensajes o evidencias. Ni el operador puede leer el contenido.",
+  },
+  {
+    icono: "🏢",
+    titulo: "Multi-tenant aislado",
+    desc: "Cada empresa tiene su propio schema PostgreSQL. No hay riesgo de fuga entre clientes. Validado en cada request con regex antes de SET search_path.",
+  },
+  {
+    icono: "📜",
+    titulo: "Audit log inmutable",
+    desc: "Cada acceso de backoffice queda registrado con sellado de tiempo TSA RFC 3161. Exportable para Inspección de Trabajo y auditoría interna.",
+  },
+  {
+    icono: "🌍",
+    titulo: "Cloud europeo",
+    desc: "Infraestructura en servidores europeos (GDPR art. 44–49). Sin transferencias a EE.UU. Subprocesadores listados públicamente.",
+  },
+  {
+    icono: "🔑",
+    titulo: "Autenticación robusta",
+    desc: "JWT RS256 + refresh rotativos + revocación. MFA TOTP disponible. Argon2id (OWASP 2023). Lockout automático tras 5 intentos fallidos.",
+  },
+  {
+    icono: "📋",
+    titulo: "RGPD y Ley 2/2023",
+    desc: "Minimización de datos, retención configurable, derecho al olvido implementado, DPA modelo firmable, EIPD realizada.",
+  },
+];
+---
+
+<section id="seguridad" class="py-20 bg-white">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-14">
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+        Seguridad y privacidad por diseño
+      </h2>
+      <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+        No es marketing. Es arquitectura. Cada decisión técnica tiene como premisa
+        que ni nosotros podamos acceder a los datos sensibles de tus trabajadores.
+      </p>
+    </div>
+
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {garantias.map((g) => (
+        <div class="flex gap-4">
+          <div class="text-3xl shrink-0 mt-0.5" aria-hidden="true">{g.icono}</div>
+          <div>
+            <h3 class="text-sm font-bold text-gray-900 mb-1">{g.titulo}</h3>
+            <p class="text-sm text-gray-600 leading-relaxed">{g.desc}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Normativa -->
+    <div class="mt-16 rounded-2xl bg-blue-50 border border-blue-100 p-8">
+      <h3 class="text-lg font-bold text-gray-900 mb-4">Marco normativo cubierto</h3>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {[
+          "Ley 2/2023 — Canal de denuncias",
+          "Directiva (UE) 2019/1937",
+          "Ley Orgánica 3/2007 — Igualdad",
+          "Real Decreto 901/2020 — Planes de igualdad",
+          "RGPD (UE) 2016/679",
+          "Convenio OIT núm. 190",
+          "NTP 854 y 891 — INSST",
+          "Criterio Técnico ITSS 69/2009",
+        ].map((norma) => (
+          <div class="flex items-center gap-2 text-sm text-gray-700">
+            <span class="text-green-500 font-bold" aria-hidden="true">✓</span>
+            {norma}
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

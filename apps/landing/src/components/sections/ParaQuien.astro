@@ -1,0 +1,95 @@
+---
+const perfiles = [
+  {
+    icono: "🏢",
+    titulo: "Para la empresa",
+    subtitulo: "Responsable de RRHH / Dirección",
+    puntos: [
+      "Canal de denuncia Ley 2/2023 listo en menos de 24h",
+      "Expedientes con firma digital y sello de tiempo TSA",
+      "Plan de Igualdad autogenerado — arts. 45-49 ET",
+      "Dashboard de cumplimiento normativo en tiempo real",
+      "Formación obligatoria con certificados verificables",
+      "Cifrado extremo a extremo: ni vosotros leéis los relatos",
+    ],
+    cta: { texto: "Solicitar demo para tu empresa", href: "#demo" },
+    color: "blue",
+  },
+  {
+    icono: "👷",
+    titulo: "Para el trabajador",
+    subtitulo: "Canal seguro y anónimo",
+    puntos: [
+      "Denuncia anónima cifrada — sin nombre, sin IP registrada",
+      "Código de seguimiento: sigue tu caso sin identificarte",
+      "Asistente IA para clasificar y orientar tu situación",
+      "Mediación voluntaria con consentimiento garantizado",
+      "Formación sobre protocolos y derechos laborales",
+      "Protección contra represalias (Ley 2/2023 art. 21)",
+    ],
+    cta: { texto: "Ver cómo funciona para trabajadores", href: "#como-funciona" },
+    color: "green",
+  },
+  {
+    icono: "🔍",
+    titulo: "Para el inspector",
+    subtitulo: "Organismos de supervisión",
+    puntos: [
+      "Acceso de solo lectura a expedientes con trazabilidad completa",
+      "Exportación con hash SHA-256 para cadena de custodia",
+      "Informes de cumplimiento por periodo descargables",
+      "Auditoría automática de plazos legales (Ley 2/2023 art. 8)",
+      "Datos anonimizados k-anonimato ≥5 en todos los informes",
+      "Entorno cloud europeo — sin transferencias internacionales",
+    ],
+    cta: { texto: "Conocer el modelo de auditoría", href: "#seguridad" },
+    color: "purple",
+  },
+];
+
+const colorMap: Record<string, { border: string; iconBg: string; ctaClass: string; bullet: string }> = {
+  blue:   { border: "border-blue-100",   iconBg: "bg-blue-50",   ctaClass: "text-blue-600 hover:text-blue-700",   bullet: "text-blue-500" },
+  green:  { border: "border-green-100",  iconBg: "bg-green-50",  ctaClass: "text-green-600 hover:text-green-700",  bullet: "text-green-500" },
+  purple: { border: "border-purple-100", iconBg: "bg-purple-50", ctaClass: "text-purple-600 hover:text-purple-700", bullet: "text-purple-500" },
+};
+---
+
+<section id="para-quien" class="py-20 bg-gray-50">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-14">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">Una plataforma, tres perfiles</h2>
+      <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+        SafeWork AI está diseñada para que cada actor del proceso tenga exactamente la información y herramientas que necesita — sin más, sin menos.
+      </p>
+    </div>
+
+    <div class="grid gap-8 lg:grid-cols-3">
+      {perfiles.map((p) => {
+        const c = colorMap[p.color];
+        return (
+          <div class={`bg-white rounded-2xl border ${c.border} shadow-sm p-8 flex flex-col`}>
+            <div class={`w-12 h-12 ${c.iconBg} rounded-xl flex items-center justify-center text-2xl mb-5`}>
+              {p.icono}
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-1">{p.titulo}</h3>
+            <p class="text-sm text-gray-500 mb-6">{p.subtitulo}</p>
+            <ul class="space-y-3 flex-1">
+              {p.puntos.map((punto) => (
+                <li class="flex items-start gap-2 text-sm text-gray-700">
+                  <span class={`mt-0.5 ${c.bullet} flex-shrink-0`}>✓</span>
+                  <span>{punto}</span>
+                </li>
+              ))}
+            </ul>
+            <a
+              href={p.cta.href}
+              class={`mt-8 text-sm font-semibold ${c.ctaClass} inline-flex items-center gap-1 transition-colors`}
+            >
+              {p.cta.texto} →
+            </a>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>

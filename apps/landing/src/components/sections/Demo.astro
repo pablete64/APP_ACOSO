@@ -1,0 +1,113 @@
+---
+---
+<section id="demo" class="py-20 bg-blue-950 text-white">
+  <div class="max-w-3xl mx-auto px-6 text-center space-y-8">
+    <h2 class="text-3xl sm:text-4xl font-bold">Solicita una demo gratuita</h2>
+    <p class="text-lg text-blue-200">
+      Te mostramos la plataforma completa en 30 minutos. Sin compromiso.
+      Adaptamos la demo a tu sector y tamaño de empresa.
+    </p>
+
+    <form
+      action="/api/demo"
+      method="POST"
+      class="bg-blue-900/60 backdrop-blur rounded-2xl border border-blue-700/50 p-8 text-left space-y-4"
+      aria-label="Formulario de solicitud de demo"
+    >
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="nombre" class="block text-sm font-medium text-blue-200 mb-1">
+            Nombre *
+          </label>
+          <input
+            id="nombre"
+            name="nombre"
+            type="text"
+            required
+            autocomplete="name"
+            class="block w-full rounded-lg bg-blue-800/50 border border-blue-600/50 px-3 py-2.5 text-sm text-white placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-white"
+            placeholder="Ana García"
+          />
+        </div>
+        <div>
+          <label for="empresa" class="block text-sm font-medium text-blue-200 mb-1">
+            Empresa *
+          </label>
+          <input
+            id="empresa"
+            name="empresa"
+            type="text"
+            required
+            autocomplete="organization"
+            class="block w-full rounded-lg bg-blue-800/50 border border-blue-600/50 px-3 py-2.5 text-sm text-white placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-white"
+            placeholder="Empresa S.L."
+          />
+        </div>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="email" class="block text-sm font-medium text-blue-200 mb-1">
+            Email profesional *
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            autocomplete="email"
+            class="block w-full rounded-lg bg-blue-800/50 border border-blue-600/50 px-3 py-2.5 text-sm text-white placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-white"
+            placeholder="ana@empresa.com"
+          />
+        </div>
+        <div>
+          <label for="trabajadores" class="block text-sm font-medium text-blue-200 mb-1">
+            Nº de trabajadores/as
+          </label>
+          <select
+            id="trabajadores"
+            name="trabajadores"
+            class="block w-full rounded-lg bg-blue-800/50 border border-blue-600/50 px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white"
+          >
+            <option value="50-100">50–100</option>
+            <option value="100-250">100–250</option>
+            <option value="250-500">250–500</option>
+            <option value="500+">Más de 500</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label for="mensaje" class="block text-sm font-medium text-blue-200 mb-1">
+          ¿Qué necesitas resolver?
+        </label>
+        <textarea
+          id="mensaje"
+          name="mensaje"
+          rows="3"
+          class="block w-full rounded-lg bg-blue-800/50 border border-blue-600/50 px-3 py-2.5 text-sm text-white placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-white resize-none"
+          placeholder="Canal de denuncia, plan de igualdad, formación…"
+        ></textarea>
+      </div>
+
+      <div class="flex items-start gap-2">
+        <input id="rgpd" name="rgpd" type="checkbox" required class="mt-0.5 rounded border-blue-500" />
+        <label for="rgpd" class="text-xs text-blue-300">
+          Acepto la <a href="/legal/privacidad" class="underline">política de privacidad</a>.
+          Tus datos se usan exclusivamente para gestionar esta solicitud (RGPD art. 6.1.b).
+        </label>
+      </div>
+
+      <button
+        type="submit"
+        class="w-full py-3 px-6 text-sm font-semibold bg-white text-blue-900 hover:bg-blue-50 rounded-xl transition-colors"
+      >
+        Solicitar demo →
+      </button>
+    </form>
+
+    <p class="text-xs text-blue-400">
+      También puedes escribirnos a <a href="mailto:hola@safework.es" class="underline">hola@safework.es</a>
+    </p>
+  </div>
+</section>

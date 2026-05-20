@@ -1,0 +1,134 @@
+name: Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Cada lunes a las 07:00 UTC
+    - cron: "0 7 * * 1"
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ─── DEPENDENCIAS NODE ─────────────────────────────────────────────────────
+  audit-node:
+    name: pnpm audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: "9"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Audit (sin dev deps en prod)
+        run: pnpm audit --prod --audit-level=high
+
+  # ─── DEPENDENCIAS PYTHON ───────────────────────────────────────────────────
+  audit-python:
+    name: pip-audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: pip-audit (api)
+        run: |
+          pip install pip-audit
+          pip-audit -r services/api/requirements.txt --ignore-vuln GHSA-w3h3-4rj7-4ph4
+
+      - name: pip-audit (ai-engine)
+        run: pip-audit -r services/ai-engine/requirements.txt || true
+
+  # ─── DEPENDENCIAS JAVA ─────────────────────────────────────────────────────
+  audit-java:
+    name: OWASP Dependency-Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: OWASP Dependency-Check
+        run: |
+          mvn -f services/case-management/pom.xml \
+            org.owasp:dependency-check-maven:check \
+            -DfailBuildOnCVSS=7 \
+            -DsuppressionFile=.github/owasp-suppressions.xml \
+            --no-transfer-progress
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: owasp-report
+          path: services/case-management/target/dependency-check-report.html
+
+  # ─── SECRETOS HARDCODEADOS ─────────────────────────────────────────────────
+  secrets-scan:
+    name: Gitleaks — secretos en código
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ─── IMÁGENES DOCKER ───────────────────────────────────────────────────────
+  trivy:
+    name: Trivy — vulnerabilidades en imágenes
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [api, ai-engine, case-management, web, landing]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build imagen ${{ matrix.service }}
+        run: |
+          case "${{ matrix.service }}" in
+            api)            ctx="services/api" ;;
+            ai-engine)      ctx="services/ai-engine" ;;
+            case-management) ctx="services/case-management" ;;
+            web)            ctx="apps/web" ;;
+            landing)        ctx="apps/landing" ;;
+          esac
+          docker build -t safework-${{ matrix.service }}:scan $ctx --quiet
+
+      - name: Trivy scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: safework-${{ matrix.service }}:scan
+          format: sarif
+          output: trivy-${{ matrix.service }}.sarif
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+
+      - name: Upload SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: trivy-${{ matrix.service }}.sarif
+          category: trivy-${{ matrix.service }}

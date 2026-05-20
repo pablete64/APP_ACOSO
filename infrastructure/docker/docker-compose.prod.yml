@@ -1,0 +1,180 @@
+version: "3.9"
+
+# ============================================================
+# SafeWork AI — Docker Compose PRODUCCIÓN
+# Uso: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# ============================================================
+
+services:
+  postgres:
+    restart: always
+    ports: []
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  redis:
+    restart: always
+    ports: []
+
+  api:
+    build:
+      target: production
+    restart: always
+    environment:
+      DEBUG: "false"
+      API_RELOAD: "false"
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          memory: 512M
+
+  ai-engine:
+    build:
+      target: production
+    restart: always
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 1G
+
+  case-management:
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  web:
+    build:
+      target: production
+    restart: always
+    environment:
+      NODE_ENV: production
+
+  landing:
+    build:
+      target: production
+    restart: always
+    environment:
+      NODE_ENV: production
+
+  # --- Monitoreo: Prometheus ---
+  prometheus:
+    image: prom/prometheus:v2.51.2
+    container_name: safework_prometheus
+    restart: always
+    volumes:
+      - ../../infrastructure/monitoring/prometheus:/etc/prometheus:ro
+      - prometheus_data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=30d
+      - --web.enable-lifecycle
+    expose:
+      - "9090"
+    networks:
+      - safework_net
+
+  # --- Monitoreo: Alertmanager ---
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    container_name: safework_alertmanager
+    restart: always
+    volumes:
+      - ../../infrastructure/monitoring/alertmanager:/etc/alertmanager:ro
+      - alertmanager_data:/alertmanager
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --storage.path=/alertmanager
+    expose:
+      - "9093"
+    networks:
+      - safework_net
+
+  # --- Monitoreo: Grafana ---
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: safework_grafana
+    restart: always
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+      GF_SERVER_ROOT_URL: https://monitor.safework.es
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_SECURITY_DISABLE_GRAVATAR: "true"
+    volumes:
+      - ../../infrastructure/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ../../infrastructure/monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    expose:
+      - "3000"
+    networks:
+      - safework_net
+    depends_on:
+      - prometheus
+
+  # --- Exporters ---
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    container_name: safework_postgres_exporter
+    restart: always
+    environment:
+      DATA_SOURCE_NAME: "postgresql://safework:${DATABASE_PASSWORD}@postgres:5432/safework_db?sslmode=disable"
+    expose:
+      - "9187"
+    networks:
+      - safework_net
+    depends_on:
+      - postgres
+
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.58.0
+    container_name: safework_redis_exporter
+    restart: always
+    environment:
+      REDIS_ADDR: "redis://redis:6379"
+    expose:
+      - "9121"
+    networks:
+      - safework_net
+    depends_on:
+      - redis
+
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:1.1.0
+    container_name: safework_nginx_exporter
+    restart: always
+    command:
+      - -nginx.scrape-uri=http://nginx:8080/stub_status
+    expose:
+      - "9113"
+    networks:
+      - safework_net
+
+  node-exporter:
+    image: prom/node-exporter:v1.7.0
+    container_name: safework_node_exporter
+    restart: always
+    pid: host
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
+    expose:
+      - "9100"
+    networks:
+      - safework_net
+
+volumes:
+  prometheus_data:
+  alertmanager_data:
+  grafana_data:

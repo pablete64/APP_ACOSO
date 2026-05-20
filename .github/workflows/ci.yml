@@ -1,0 +1,203 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "20"
+  PYTHON_VERSION: "3.12"
+  JAVA_VERSION: "21"
+  PNPM_VERSION: "9"
+
+# NOTA: Mientras el proyecto está en fase de scaffolding (pre-producción),
+# los jobs de lint/typecheck/tests son INFORMATIVOS (continue-on-error: true).
+# Cuando esté maduro, quitar continue-on-error y exigir verde estricto.
+
+jobs:
+  # ─── LINT ──────────────────────────────────────────────────────────────────
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install Node deps
+        run: pnpm install --frozen-lockfile
+
+      - name: ESLint (monorepo)
+        run: pnpm turbo lint
+        continue-on-error: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Ruff (api + ai-engine)
+        continue-on-error: true
+        run: |
+          pip install ruff
+          ruff check services/api/app services/ai-engine/app || true
+
+  # ─── TYPECHECK ─────────────────────────────────────────────────────────────
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install Node deps
+        run: pnpm install --frozen-lockfile
+
+      - name: TypeScript check
+        run: pnpm turbo typecheck
+        continue-on-error: true
+
+  # ─── TESTS ─────────────────────────────────────────────────────────────────
+  test-node:
+    name: Tests Node (Vitest)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Vitest (crypto)
+        run: pnpm --filter=@safework/crypto test
+
+  test-python:
+    name: Tests Python (pytest)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: safework_test
+          POSTGRES_USER: safework
+          POSTGRES_PASSWORD: test_password
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install deps
+        run: |
+          pip install -r services/api/requirements.txt
+          pip install pytest pytest-asyncio pytest-cov httpx
+
+      - name: pytest (api)
+        env:
+          DATABASE_URL: postgresql://safework:test_password@localhost:5432/safework_test
+          REDIS_URL: redis://localhost:6379
+          JWT_SECRET: test_jwt_secret_for_ci_only
+          ENCRYPTION_MASTER_KEY: test_encryption_key_for_ci_only_32b
+        run: pytest services/api --tb=short || true
+
+  test-java:
+    name: Tests Java (JUnit)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: safework_test
+          POSTGRES_USER: safework
+          POSTGRES_PASSWORD: test_password
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+
+      - name: mvn test
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/safework_test
+          SPRING_DATASOURCE_USERNAME: safework
+          SPRING_DATASOURCE_PASSWORD: test_password
+          SPRING_PROFILES_ACTIVE: test
+          JWT_SECRET: test_jwt_secret_for_ci_only
+        run: mvn -f services/case-management/pom.xml test -q
+
+  # ─── BUILD ─────────────────────────────────────────────────────────────────
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Verifica que turbo arranca
+        run: pnpm turbo --version
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+
+      - name: Build Java
+        run: mvn -f services/case-management/pom.xml package -DskipTests -q

@@ -1,0 +1,5 @@
+{
+  "extends": "../../packages/config/typescript/astro.json",
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.astro"],
+  "exclude": ["node_modules", "dist", ".astro"]
+}

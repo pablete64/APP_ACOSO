@@ -1,0 +1,64 @@
+{
+  "app": {
+    "name": "SafeWork AI",
+    "tagline": "Tu espacio seguro en el trabajo"
+  },
+  "nav": {
+    "denuncia":   "Presentar denuncia",
+    "seguimiento":"Seguimiento",
+    "asistente":  "Asistente IA",
+    "formacion":  "Formación",
+    "contacto":   "Línea de contacto",
+    "clima":      "Clima laboral",
+    "expedientes":"Expedientes",
+    "denuncias":  "Denuncias",
+    "usuarios":   "Usuarios",
+    "reportes":   "Reportes",
+    "auditoria":  "Auditoría",
+    "plan":       "Plan de igualdad",
+    "dashboard":  "Dashboard"
+  },
+  "auth": {
+    "login":          "Iniciar sesión",
+    "logout":         "Cerrar sesión",
+    "email":          "Correo electrónico",
+    "password":       "Contraseña",
+    "forgot":         "¿Olvidaste tu contraseña?",
+    "mfa_code":       "Código de verificación (MFA)",
+    "mfa_placeholder":"123456"
+  },
+  "errors": {
+    "unauthorized":  "No tienes acceso a esta sección",
+    "not_found":     "Página no encontrada",
+    "server_error":  "Error del servidor. Inténtalo más tarde.",
+    "session_expired":"Tu sesión ha expirado. Vuelve a iniciar sesión."
+  },
+  "actions": {
+    "save":      "Guardar",
+    "cancel":    "Cancelar",
+    "confirm":   "Confirmar",
+    "delete":    "Eliminar",
+    "download":  "Descargar",
+    "send":      "Enviar",
+    "next":      "Siguiente",
+    "back":      "Atrás",
+    "copy":      "Copiar",
+    "copied":    "Copiado"
+  },
+  "status": {
+    "loading":   "Cargando...",
+    "saving":    "Guardando...",
+    "success":   "Guardado correctamente",
+    "error":     "Ha ocurrido un error"
+  },
+  "discrete_mode": {
+    "enable":  "Activar modo discreto",
+    "disable": "Mostrar SafeWork AI"
+  },
+  "legal": {
+    "notice_title": "Aviso legal — Ley 2/2023 y LOPD",
+    "anonymous":    "Anónimo",
+    "tracking_code":"Código de seguimiento",
+    "tracking_hint": "Guarda este código — es la única forma de acceder a tu denuncia."
+  }
+}
